@@ -27,7 +27,7 @@ declare module _mithril {
 				MithrilVirtualElement<T> |
 				MithrilComponent<T>>
 		): MithrilVirtualElement<T>;
-		
+
 		/**
 		* Initializes a component for use with m.render, m.mount, etc.
 		*
@@ -123,8 +123,22 @@ declare module _mithril {
 		*/
 		withAttr(
 			property: string,
-			callback: (value: any) => void
+			callback: (value: any) => void,
+			callbackThis: any
 		): (e: Event) => any;
+
+		/**
+		* Returns a event handler that can be bound to an element, firing with
+		* the specified property.
+		*
+		* @param attributeName Name of the element's attribute to bind to.
+		* @param property The property to bind.
+		* @return A function suitable for listening to an event.
+		*/
+		withAttr<T>(
+			attributeName: string,
+			property: MithrilBasicProperty<T>
+		) : (e: Event) => any;
 
 		/**
 		* @deprecated Use m.mount instead
@@ -249,7 +263,7 @@ declare module _mithril {
 			<T extends MithrilController>(
 				rootElement: Element,
 				defaultRoute: string,
-				routes: MithrilRoutes<T>
+				routes: MithrilRoutes
 			): void;
 
 			/**
@@ -533,6 +547,12 @@ declare module _mithril {
 		* @see MithrilElementConfig
 		*/
 		config?: MithrilElementConfig;
+
+		/**
+		* Any other virtual element properties including attributes and
+		* event handlers
+		*/
+		[property: string]: any;
 	}
 
 	/**
@@ -554,7 +574,7 @@ declare module _mithril {
 	* @see MithrilControllerConstructor
 	*/
 	interface MithrilControllerFunction<T extends MithrilController> {
-		(): T;
+		(opts?: any): T;
 	}
 
 	/**
@@ -596,7 +616,7 @@ declare module _mithril {
 		*
 		* @see m.component
 		*/
-		view(ctrl: T): MithrilVirtualElement<T>;
+		view(ctrl?: T, opts?: any): MithrilVirtualElement<T>;
 	}
 
 	/**
@@ -667,12 +687,12 @@ declare module _mithril {
 	/**
 	* This represents a key-value mapping linking routes to components.
 	*/
-	interface MithrilRoutes<T extends MithrilController> {
+	interface MithrilRoutes {
 		/**
 		* The key represents the route. The value represents the corresponding
 		* component.
 		*/
-		[key: string]: MithrilComponent<T>;
+		[key: string]: MithrilComponent<MithrilController>;
 	}
 
 	/**
