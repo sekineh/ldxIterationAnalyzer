@@ -1,0 +1,8 @@
+#,Status,Duration (sec),R/W - Constant Block Sizes,SMB2 Throughput (average) MB/sec,SMB2 Commands Succeeded/sec (average) ,SMB2 Average Response/Latency Time (average) ms
+1,Finished,79,1KB,1.115,959.994,2.109
+2,Finished,79,2KB,2.046,960.185,2.235
+3,Finished,79,4KB,3.907,960.045,2.370
+4,Finished,79,8KB,7.624,959.883,2.539
+5,Finished,79,16KB,15.078,960.217,2.809
+6,Finished,79,32KB,27.103,869.265,3.579
+7,Finished,79,64KB,26.971,436.735,13.692
