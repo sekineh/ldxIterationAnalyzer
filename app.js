@@ -69,6 +69,7 @@ var my;
             console.log('levelsSelected()', vm.levelsSelected());
             var retval = vm.iteratorColumns.map(function (e, i) { return ({
                 name: e.name,
+                kind: e.kind,
                 levels: vm.levelsSelected()[i]
             }); });
             return retval;
@@ -151,16 +152,11 @@ function csvTextEntered(e) {
 $("#csvText").on("keyup", csvTextEntered);
 $("#parseButton").on("click", csvTextEntered);
 $(csvTextEntered);
-function arrayMulti(array_a, array_b) {
+function arrayAppendDistributive(array_a, array_b) {
     var retval = [];
     array_a.forEach(function (a) {
         array_b.forEach(function (b) {
-            if (Array.isArray(a)) {
-                retval.push(a.concat(b));
-            }
-            else {
-                retval.push([a, b]);
-            }
+            retval.push(a.concat(b));
         });
     });
     return retval;
@@ -177,10 +173,10 @@ function loopspecFlattern(loopspecs) {
     loopspecs.forEach(function (e, i) {
         indices.push(loopspecs[i].name);
         if (iteratedValues != null) {
-            iteratedValues = arrayMulti(iteratedValues, loopspecs[i].values);
+            iteratedValues = arrayAppendDistributive(iteratedValues, loopspecs[i].values);
         }
         else {
-            iteratedValues = loopspecs[i].values;
+            iteratedValues = loopspecs[i].values.map(function (e) { return [e]; });
         }
     });
     return { names: indices, value_arrays: iteratedValues };

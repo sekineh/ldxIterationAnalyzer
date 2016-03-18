@@ -9,7 +9,7 @@ enum ColumnKind {
     RESULT = 3
 }
 
-function columnKindFromName(columnName) {
+function columnKindFromName(columnName): ColumnKind {
     if (columnName == "#" ||
         columnName == "Duration (sec)" ||
         columnName == "Status") {
@@ -47,7 +47,7 @@ function extractLevels(dataset, column_name): string[] {
 interface ColumnSpec {
     name: string
     kind: ColumnKind
-    levels: any[]
+    levels: string[]
 }
 
 function extractColumnSpec(dataset): ColumnSpec[] {
@@ -100,11 +100,12 @@ module my {
             console.log('levelsSelected()', levelsSelected());
             selectX = m.prop(maxColumn.name);
         }
-        export function columnsSelected(){
+        export function columnsSelected(): ColumnSpec[] {
             console.log('iteratorColumns', iteratorColumns);
             console.log('levelsSelected()', levelsSelected());
             var retval = iteratorColumns.map( (e, i) => ({
                 name: e.name,
+                kind: e.kind,
                 levels: levelsSelected()[i]
             }));
             return retval;
@@ -202,22 +203,15 @@ $(csvTextEntered);
 // Loop Utility
 //
 
-function arrayMulti(array_a: any[], array_b: any[]) {
+function arrayAppendDistributive(array_a: string[][], array_b: string[]): string[][] {
     var retval = [];
     array_a.forEach(function(a){
         array_b.forEach(function(b){
-            if (Array.isArray(a)) {
-                retval.push(a.concat(b));
-            } else {
-                retval.push([a, b]);
-            }
+            retval.push(a.concat(b));
         });
     });
     return retval;
 }
-
-// console.log(arrayMulti([1,2,3],[4,5]));
-// console.log(arrayMulti(arrayMulti([1,2,3],[4,5]),[7,8,9]));
 
 interface LoopSpec {
     name: string
@@ -243,9 +237,9 @@ function loopspecFlattern(loopspecs: LoopSpec[]): FlatternedLoopSpec {
     loopspecs.forEach(function (e, i) {
         indices.push(loopspecs[i].name);
         if (iteratedValues != null) {
-            iteratedValues = arrayMulti(iteratedValues, loopspecs[i].values);
+            iteratedValues = arrayAppendDistributive(iteratedValues, loopspecs[i].values);
         } else {
-            iteratedValues = loopspecs[i].values;
+            iteratedValues = loopspecs[i].values.map( e => [e] );
         }
     });
     return {names: indices, value_arrays: iteratedValues};
