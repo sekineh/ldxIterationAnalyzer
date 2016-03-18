@@ -220,15 +220,28 @@ interface LoopSpec {
 
 // example
 var loopspecs: LoopSpec[] = [
-    {name: "3", values: ["8"]},
-    {name: "4", values: ["0", "50", "100"]},
-    {name: "6", values: ["8", "16"]},
-    {name: "7", values: ["0"]}
+    {name: "a", values: ["8"]},
+    {name: "b", values: ["0", "50", "100"]},
+    {name: "c", values: ["8", "16"]},
+    {name: "d", values: ["0"]}
 ];
 
 interface FlatternedLoopSpec {
     names: string[]
     value_arrays: string[][]
+}
+
+// example
+var flatternedLoopSpec: FlatternedLoopSpec = {
+    "names":["a","b","c","d"],
+    "value_arrays":[
+        ["8","0","8","0"],
+        ["8","0","16","0"],
+        ["8","50","8","0"],
+        ["8","50","16","0"],
+        ["8","100","8","0"],
+        ["8","100","16","0"]
+    ]
 }
 
 function loopspecFlattern(loopspecs: LoopSpec[]): FlatternedLoopSpec {
