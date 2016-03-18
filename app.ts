@@ -232,7 +232,12 @@ var loopspecs: LoopSpec[] = [
     {name: "7", values: ["0"]}
 ];
 
-function loopspecFlattern(loopspecs: LoopSpec[]) {
+interface FlatternedLoopSpec {
+    names: string[]
+    value_arrays: string[][]
+}
+
+function loopspecFlattern(loopspecs: LoopSpec[]): FlatternedLoopSpec {
     var indices = [];
     var iteratedValues: any[] = null;
     loopspecs.forEach(function (e, i) {
@@ -243,7 +248,7 @@ function loopspecFlattern(loopspecs: LoopSpec[]) {
             iteratedValues = loopspecs[i].values;
         }
     });
-    return [indices, iteratedValues];
+    return {names: indices, value_arrays: iteratedValues};
 }
 
 // console.log(loopspecFlattern(loopspecs));
@@ -284,9 +289,9 @@ function generateKeyname(loopspecs: LoopSpec[], iter, numOfIterations): string {
 function generateValues(loopspecs: LoopSpec[], dataset) {
     var flatspec = loopspecFlattern(loopspecs);
 
-    var indices = flatspec[0];
+    var indices = flatspec.names;
     console.log('indices:', indices);
-    var iterations = flatspec[1];
+    var iterations = flatspec.value_arrays;
     console.log('iterations:', iterations);
 
     var numOfIterations = iterations.length;

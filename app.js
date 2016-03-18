@@ -183,7 +183,7 @@ function loopspecFlattern(loopspecs) {
             iteratedValues = loopspecs[i].values;
         }
     });
-    return [indices, iteratedValues];
+    return { names: indices, value_arrays: iteratedValues };
 }
 function shortenColumnExpression(columnName) {
     switch (columnName) {
@@ -217,9 +217,9 @@ function generateKeyname(loopspecs, iter, numOfIterations) {
 }
 function generateValues(loopspecs, dataset) {
     var flatspec = loopspecFlattern(loopspecs);
-    var indices = flatspec[0];
+    var indices = flatspec.names;
     console.log('indices:', indices);
-    var iterations = flatspec[1];
+    var iterations = flatspec.value_arrays;
     console.log('iterations:', iterations);
     var numOfIterations = iterations.length;
     return iterations.map(function (iter) {
