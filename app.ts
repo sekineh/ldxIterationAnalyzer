@@ -67,7 +67,7 @@ module my {
         export var iteratorColumns;
         export var resultColumns;
 
-        export var selectX: _mithril.MithrilProperty<string>;
+        export var selectX: _mithril.MithrilBasicProperty<string>;
         export var levelsSelected;
 
         export function init() {

@@ -1,4 +1,3 @@
-/// <reference path="typings/tsd.d.ts" />
 var ColumnKind;
 (function (ColumnKind) {
     ColumnKind[ColumnKind["IGNORE"] = 1] = "IGNORE";
