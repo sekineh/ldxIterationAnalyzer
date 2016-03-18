@@ -165,22 +165,22 @@ function arrayMulti(array_a, array_b) {
     });
     return retval;
 }
-var loopspec = [
-    [3, ["8"]],
-    [4, ["0", "50", "100"]],
-    [6, ["8", "16"]],
-    [7, ["0"]]
+var loopspecs = [
+    { name: "3", values: ["8"] },
+    { name: "4", values: ["0", "50", "100"] },
+    { name: "6", values: ["8", "16"] },
+    { name: "7", values: ["0"] }
 ];
-function loopspecFlattern(loopspec) {
+function loopspecFlattern(loopspecs) {
     var indices = [];
     var iteratedValues = null;
-    loopspec.forEach(function (e, i) {
-        indices.push(loopspec[i][0]);
+    loopspecs.forEach(function (e, i) {
+        indices.push(loopspecs[i].name);
         if (iteratedValues != null) {
-            iteratedValues = arrayMulti(iteratedValues, loopspec[i][1]);
+            iteratedValues = arrayMulti(iteratedValues, loopspecs[i].values);
         }
         else {
-            iteratedValues = loopspec[i][1];
+            iteratedValues = loopspecs[i].values;
         }
     });
     return [indices, iteratedValues];
@@ -198,10 +198,10 @@ function shortenColumnExpression(columnName) {
     }
     return columnName.replace(/.* - /, '');
 }
-function generateKeyname(loopspec, iter, numOfIterations) {
-    var subIterators = loopspec.map(function (e) {
-        console.log('[loopspec element]', e);
-        return e[1].length > 1 ? e[0] : null;
+function generateKeyname(loopspecs, iter, numOfIterations) {
+    var subIterators = loopspecs.map(function (e) {
+        console.log('[loopspecs element]', e);
+        return e.values.length > 1 ? e.name : null;
     });
     console.log('subIterators:', subIterators);
     var keyname = subIterators.map(function (e, i) {
@@ -211,12 +211,12 @@ function generateKeyname(loopspec, iter, numOfIterations) {
         else {
             return null;
         }
-    }).filter(function (e) { return e; }).join('; ');
+    }).filter(function (e) { return e != null; }).join('; ');
     console.log('keyname', keyname);
     return keyname;
 }
-function generateValues(loopspec, dataset) {
-    var flatspec = loopspecFlattern(loopspec);
+function generateValues(loopspecs, dataset) {
+    var flatspec = loopspecFlattern(loopspecs);
     var indices = flatspec[0];
     console.log('indices:', indices);
     var iterations = flatspec[1];
@@ -236,7 +236,7 @@ function generateValues(loopspec, dataset) {
             var keyname = 'selected';
         }
         else {
-            var keyname = generateKeyname(loopspec, iter, numOfIterations);
+            var keyname = generateKeyname(loopspecs, iter, numOfIterations);
         }
         return { key: keyname, values: datasetFiltered };
     });
@@ -284,13 +284,13 @@ var plotComponent;
         if (columnsSelected === void 0) { columnsSelected = my.vm.columnsSelected(); }
         if (xname === void 0) { xname = my.vm.selectX(); }
         console.log('columnsSelected:', columnsSelected);
-        var loopspec = columnsSelected.filter(function (e, i) {
+        var loopspecs = columnsSelected.filter(function (e, i) {
             return e.name != xname;
         }).map(function (e, i) {
-            return [e.name, e.levels];
+            return { name: e.name, values: e.levels };
         });
-        console.log('loopspec:', loopspec);
-        var datum = generateValues(loopspec, dataset);
+        console.log('loopspecs:', loopspecs);
+        var datum = generateValues(loopspecs, dataset);
         nv.addGraph(function () {
             var chart = nv.models.multiBarChart()
                 .duration(100)
