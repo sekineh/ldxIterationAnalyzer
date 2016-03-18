@@ -295,31 +295,27 @@ function generateKeyname(loopspecs: LoopSpec[], iter, numOfIterations): string {
 
 function generateValues(loopspecs: LoopSpec[], dataset) {
     var flatspec = loopspecFlattern(loopspecs);
+    console.log('flatspec.names:', flatspec.names);
+    console.log('flatspec.value_arrays:', flatspec.value_arrays);
 
-    var indices = flatspec.names;
-    console.log('indices:', indices);
-    var iterations = flatspec.value_arrays;
-    console.log('iterations:', iterations);
+    // if (flatspec.value_arrays == null) {
+    //     return [{key: 'selected', values: dataset}]
+    // }
 
-    var numOfIterations = iterations.length;
-
-    return iterations.map(function(iter) {
+    return flatspec.value_arrays.map(function(iter) {
         var datasetFiltered = dataset.filter(function(row) {
-            for (var i = 0; i < indices.length; i++) {
-                if (row[indices[i]] != iter[i]) {
+            for (var i = 0; i < flatspec.names.length; i++) {
+                if (row[flatspec.names[i]] != iter[i]) {
                     return false;
                 }
             }
             return true;
         });
         console.log('datasetFiltered:', datasetFiltered);
-        if (numOfIterations == 1) {
+        if (flatspec.value_arrays.length == 1) {
             var keyname = 'selected';
-            // var keyname = indices.map(function (e, i) {
-            //     return shortenColumnName(indices[i]) + ' = ' + iter[i];
-            // }).join('; ');
         } else {
-            var keyname = generateKeyname(loopspecs, iter, numOfIterations);
+            var keyname = generateKeyname(loopspecs, iter, flatspec.value_arrays.length);
         }
 
         return { key: keyname, values: datasetFiltered };
@@ -388,6 +384,8 @@ module plotComponent {
         console.log('loopspecs:', loopspecs);
 
         var datum = generateValues(loopspecs, dataset);
+        console.log('datum:', datum);
+        // var showLegend = datum.length > 1;
 
         nv.addGraph(function() {
             var chart = nv.models.multiBarChart()
