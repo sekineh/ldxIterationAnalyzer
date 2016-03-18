@@ -226,6 +226,9 @@ function generateValues(loopspecs, dataset) {
     var flatspec = loopspecFlattern(loopspecs);
     console.log('flatspec.names:', flatspec.names);
     console.log('flatspec.value_arrays:', flatspec.value_arrays);
+    if (flatspec.value_arrays == null) {
+        return [{ key: 'selected', values: dataset }];
+    }
     return flatspec.value_arrays.map(function (iter) {
         var datasetFiltered = dataset.filter(function (row) {
             for (var i = 0; i < flatspec.names.length; i++) {

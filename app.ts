@@ -298,9 +298,9 @@ function generateValues(loopspecs: LoopSpec[], dataset) {
     console.log('flatspec.names:', flatspec.names);
     console.log('flatspec.value_arrays:', flatspec.value_arrays);
 
-    // if (flatspec.value_arrays == null) {
-    //     return [{key: 'selected', values: dataset}]
-    // }
+    if (flatspec.value_arrays == null) {
+        return [{key: 'selected', values: dataset}]
+    }
 
     return flatspec.value_arrays.map(function(iter) {
         var datasetFiltered = dataset.filter(function(row) {
