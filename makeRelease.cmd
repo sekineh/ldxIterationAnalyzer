@@ -1,3 +1,5 @@
+REM write version file
+git describe --tags > version
 REM read from file
 set /p VERSION=<version
 REM remove spaces
