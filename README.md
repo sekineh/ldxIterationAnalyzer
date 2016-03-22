@@ -23,10 +23,50 @@ $ bash -x makeTest.sh
 
 1) From git bash prompt:
 ```
-$ ./makeRelease.cmd
+$ bash -x makeRelease.sh
 ```
 2) extract zip.
 
 3) drag csv to DragCsvHere.cmd.
 
 4) See if generated html works.
+
+#### Release sample log
+
+```
+$ bash -x makeRelease.sh
++ git describe --tags
+++ cat .version
++ VERSION=v0.6.2
++ ZIPFILE=ldxIterationAnalyzer_v0.6.2.zip
++ go build genReport.go
++ echo Generating ldxIterationAnalyzer_v0.6.2.zip
+Generating ldxIterationAnalyzer_v0.6.2.zip
++ rm ../ldxIterationAnalyzer_v0.6.2.zip
++ zip -r ../ldxIterationAnalyzer_v0.6.2.zip app.js genReport.exe .version DragCSVHere.cmd css js template.html
+  adding: app.js (164 bytes security) (deflated 75%)
+  adding: genReport.exe (164 bytes security) (deflated 70%)
+  adding: .version (164 bytes security) (stored 0%)
+  adding: DragCSVHere.cmd (164 bytes security) (deflated 19%)
+  adding: css/ (164 bytes security) (stored 0%)
+  adding: css/bootstrap-theme.css (164 bytes security) (deflated 89%)
+  adding: css/bootstrap-theme.css.map (164 bytes security) (deflated 85%)
+  adding: css/bootstrap-theme.min.css (164 bytes security) (deflated 88%)
+  adding: css/bootstrap.css (164 bytes security) (deflated 86%)
+  adding: css/bootstrap.css.map (164 bytes security) (deflated 81%)
+  adding: css/bootstrap.min.css (164 bytes security) (deflated 84%)
+  adding: css/nv.d3.css (164 bytes security) (deflated 79%)
+  adding: js/ (164 bytes security) (stored 0%)
+  adding: js/bootstrap.js (164 bytes security) (deflated 80%)
+  adding: js/bootstrap.min.js (164 bytes security) (deflated 74%)
+  adding: js/d3.min.js (164 bytes security) (deflated 65%)
+  adding: js/jquery-1.11.3.js (164 bytes security) (deflated 70%)
+  adding: js/jquery-1.11.3.min.js (164 bytes security) (deflated 65%)
+  adding: js/jquery-1.11.3.min.map (164 bytes security) (deflated 60%)
+  adding: js/mithril.js (164 bytes security) (deflated 72%)
+  adding: js/mithril.min.js (164 bytes security) (deflated 61%)
+  adding: js/npm.js (164 bytes security) (deflated 62%)
+  adding: js/nv.d3.min.css (164 bytes security) (deflated 77%)
+  adding: js/nv.d3.min.js (164 bytes security) (deflated 79%)
+  adding: template.html (164 bytes security) (deflated 55%)
+```
