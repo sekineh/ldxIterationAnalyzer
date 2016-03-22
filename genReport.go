@@ -28,7 +28,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	version, err := ioutil.ReadFile("version")
+	version, err := ioutil.ReadFile(".version")
 	if err != nil {
 		panic(err)
 	}

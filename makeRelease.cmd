@@ -1,7 +1,7 @@
 REM write version file
-git describe --tags > version
+git describe --tags > .version
 REM read from file
-set /p VERSION=<version
+set /p VERSION=<.version
 REM remove spaces
 
 go build genReport.go
