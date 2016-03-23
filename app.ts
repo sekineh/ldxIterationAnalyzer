@@ -326,16 +326,8 @@ function generateValues(loopspecs: LoopSpec[], dataset) {
 //
 //
 
-function ynameToTitle(yname) {
-    if (/Throughput/.test(yname)) {
-        return 'Throughput';
-    } else if (/Succeeded\/sec/.test(yname)) {
-        return 'IOPS';
-    } else if (/Latency/.test(yname)) {
-        return 'Latency';
-    } else {
-        return yname;
-    }
+function ynameToTitle(yname: string): string {
+    return yname;
 }
 
 /**
