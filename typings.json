@@ -1,0 +1,8 @@
+{
+  "version": false,
+  "ambientDependencies": {
+    "d3": "github:DefinitelyTyped/DefinitelyTyped/d3/d3.d.ts#b45569f35d5f27716d21cc2a639c7d8ccb9a0164",
+    "jquery": "github:DefinitelyTyped/DefinitelyTyped/jquery/jquery.d.ts#b45569f35d5f27716d21cc2a639c7d8ccb9a0164",
+    "mithril": "github:DefinitelyTyped/DefinitelyTyped/mithril/mithril.d.ts#284c2b8828f06bdde1f949a22ad174f5221d57f9"
+  }
+}

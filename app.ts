@@ -1,6 +1,6 @@
-/// <reference path="typings/tsd.d.ts" />
+/// <reference path="typings/main.d.ts" />
 // For nvd3:
-declare var nv: any;
+// declare var nv: any;
 // declare function nv.addGraph(any): any;
 
 enum ColumnKind {
