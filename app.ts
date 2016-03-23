@@ -242,7 +242,7 @@ var flatternedLoopSpec: FlatternedLoopSpec = {
         ["8","100","8","0"],
         ["8","100","16","0"]
     ]
-}
+};
 
 function loopspecFlattern(loopspecs: LoopSpec[]): FlatternedLoopSpec {
     var indices = [];
