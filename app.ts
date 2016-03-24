@@ -389,10 +389,15 @@ module plotComponent {
                 .showControls(false)   //Allow user to switch between 'Grouped' and 'Stacked' mode.
                 // .groupSpacing(0.1)    //Distance between each group of bars.
                 .stacked(false)
-                .showLegend(true) // No a good idea to false Legend...
+                .showLegend(true) // Not a good idea to have a false Legend in nvd3.js 1.8.1-2
                 // .staggerLabels(true)
                 // .showValues(true) // Not implemented in nvd3.js 1.8.1
             ;
+            var defaultContentGenerator = chart.tooltip.contentGenerator();
+            chart.tooltip.contentGenerator(d =>
+                defaultContentGenerator(d) +
+                `<div class='footer'>(#${d.data["#"]})</div>`
+            );
             chart.xAxis
                 // .tickFormat(d3.format(',f'));
                 .axisLabel(xname)

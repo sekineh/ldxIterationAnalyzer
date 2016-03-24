@@ -298,6 +298,11 @@ var plotComponent;
                 .showControls(false)
                 .stacked(false)
                 .showLegend(true);
+            var defaultContentGenerator = chart.tooltip.contentGenerator();
+            chart.tooltip.contentGenerator(function (d) {
+                return defaultContentGenerator(d) +
+                    ("<div class='footer'>(#" + d.data["#"] + ")</div>");
+            });
             chart.xAxis
                 .axisLabel(xname);
             chart.yAxis
