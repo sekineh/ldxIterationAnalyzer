@@ -3,6 +3,13 @@
 // declare var nv: any;
 // declare function nv.addGraph(any): any;
 
+const debug = false;
+function debugLog(...args) {
+    if (debug) {
+        console.log(args);
+    }
+}
+
 enum ColumnKind {
     IGNORE = 1,
     ITERATOR = 2,
@@ -39,7 +46,7 @@ function extractLevels(dataset, column_name): string[] {
 
     var values = dataset.map(function(e, i){ return e[column_name]; });
     var levels = values.filter(function(e, i, self){ return self.indexOf(e) === i; });
-    console.log("levels for:", column_name, levels);
+    debugLog("levels for:", column_name, levels);
 
     return levels;
 }
@@ -78,10 +85,10 @@ module my {
 
         export function init() {
             dataset = d3.csv.parse($('#csvText').val());
-            console.log('dataset', dataset);
+            debugLog('dataset', dataset);
 
             var columnSpec = extractColumnSpec(dataset);
-            console.log("columnSpec:", columnSpec);
+            debugLog("columnSpec:", columnSpec);
 
             iteratorColumns = columnSpec.filter((e, i) => e.kind == ColumnKind.ITERATOR);
 
@@ -92,17 +99,17 @@ module my {
                 }
             });
             maxLevels = Math.max.apply(null, iteratorColumns.map(x => x.levels.length)) as number;
-            console.log('maxLevels:', maxLevels);
+            debugLog('maxLevels:', maxLevels);
 
             resultColumns = columnSpec.filter((e,i) => e.kind == ColumnKind.RESULT);
 
             levelsSelected = m.prop(iteratorColumns.map(x => [x.levels[0]]));
-            console.log('levelsSelected()', levelsSelected());
+            debugLog('levelsSelected()', levelsSelected());
             selectX = m.prop(maxColumn.name);
         }
         export function columnsSelected(): ColumnSpec[] {
-            console.log('iteratorColumns', iteratorColumns);
-            console.log('levelsSelected()', levelsSelected());
+            debugLog('iteratorColumns', iteratorColumns);
+            debugLog('levelsSelected()', levelsSelected());
             var retval = iteratorColumns.map( (e, i) => ({
                 name: e.name,
                 kind: e.kind,
@@ -133,17 +140,17 @@ module my {
                                     size: vm.maxLevels,
                                     disabled: x.name == vm.selectX() ? true : false,
                                     onchange: (ev) => {
-                                        console.log(ev);
+                                        debugLog(ev);
                                         var arr = [];
                                         for (var x of ev.target) {
-                                            // console.log(x.value, x.selected);
+                                            // debugLog(x.value, x.selected);
                                             if (x.selected) {
                                                 arr.push(x.value)
                                             }
                                         }
                                         var result = vm.levelsSelected();
                                         result[i] = arr;
-                                        // console.log('result', result);
+                                        // debugLog('result', result);
                                         vm.levelsSelected(result);
                                     }
                                 }, [
@@ -258,7 +265,7 @@ function loopspecFlattern(loopspecs: LoopSpec[]): FlatternedLoopSpec {
     return {names: indices, value_arrays: iteratedValues};
 }
 
-// console.log(loopspecFlattern(loopspecs));
+// debugLog(loopspecFlattern(loopspecs));
 
 function shortenColumnExpression(columnName: string): string {
     switch(columnName) {
@@ -276,10 +283,10 @@ function shortenColumnExpression(columnName: string): string {
 
 function generateKeyname(loopspecs: LoopSpec[], iter, numOfIterations): string {
     var subIterators = loopspecs.map(function(e) {
-        console.log('[loopspecs element]', e);
+        debugLog('[loopspecs element]', e);
         return e.values.length > 1 ? e.name : null;
     });
-    console.log('subIterators:', subIterators);
+    debugLog('subIterators:', subIterators);
     var keyname = subIterators.map(function (e, i) {
         if (e) {
             // return e + ' = ' + iter[i];
@@ -288,15 +295,15 @@ function generateKeyname(loopspecs: LoopSpec[], iter, numOfIterations): string {
             return null;
         }
     }).filter(function(e) { return e != null; }).join('; ');
-    console.log('keyname', keyname);
+    debugLog('keyname', keyname);
 
     return keyname;
 }
 
 function generateValues(loopspecs: LoopSpec[], dataset) {
     var flatspec = loopspecFlattern(loopspecs);
-    console.log('flatspec.names:', flatspec.names);
-    console.log('flatspec.value_arrays:', flatspec.value_arrays);
+    debugLog('flatspec.names:', flatspec.names);
+    debugLog('flatspec.value_arrays:', flatspec.value_arrays);
 
     if (flatspec.value_arrays == null) {
         return [{key: 'selected', values: dataset}]
@@ -311,7 +318,7 @@ function generateValues(loopspecs: LoopSpec[], dataset) {
             }
             return true;
         });
-        console.log('datasetFiltered:', datasetFiltered);
+        debugLog('datasetFiltered:', datasetFiltered);
         if (flatspec.value_arrays.length == 1) {
             var keyname = 'selected';
         } else {
@@ -344,7 +351,7 @@ module plotComponent {
 
     // It's a constructor for ctrl object!
     export function controller(args) {
-        console.log(`plotComponent.controller() args:`, args);
+        debugLog(`plotComponent.controller() args:`, args);
         this.yname = args.yname;
         // this.xname = args.xname;
         this.svgid = genSvgSelector();
@@ -354,11 +361,11 @@ module plotComponent {
         return m(ctrl.svgid, {config: config(ctrl), style: 'height: 400px'});
     }
     export function config(ctrl) {
-        console.log(`plotComponent.config() args:`, ctrl);
+        debugLog(`plotComponent.config() args:`, ctrl);
 
         return function(element, isInitialized) {
-            // console.log('config func() called. element:', element);
-            // console.log('config func() called. isInitialized:', isInitialized);
+            // debugLog('config func() called. element:', element);
+            // debugLog('config func() called. isInitialized:', isInitialized);
             plotSvg(ctrl.svgid, ctrl.yname);
 
             // return ctrl;
@@ -366,17 +373,17 @@ module plotComponent {
     }
     function plotSvg(svgSelector, yname, dataset = my.vm.dataset, columnsSelected = my.vm.columnsSelected(), xname = my.vm.selectX()) {
 
-        console.log('columnsSelected:', columnsSelected);
+        debugLog('columnsSelected:', columnsSelected);
 
         var loopspecs = columnsSelected.filter(function(e, i) {
             return e.name != xname;
         }).map(function(e, i) {
             return {name: e.name, values: e.levels};
         });
-        console.log('loopspecs:', loopspecs);
+        debugLog('loopspecs:', loopspecs);
 
         var datum = generateValues(loopspecs, dataset);
-        console.log('datum:', datum);
+        debugLog('datum:', datum);
         // var showLegend = datum.length > 1;
 
         nv.addGraph(function() {
@@ -396,7 +403,8 @@ module plotComponent {
             var defaultContentGenerator = chart.tooltip.contentGenerator();
             chart.tooltip.contentGenerator(d =>
                 defaultContentGenerator(d) +
-                `<div class='footer'>(#${d.data["#"]})</div>`
+                `<div class='footer'>(#${d.data["#"]})</div>` +
+                (debug ? `<pre>${JSON.stringify(d, null, "  ")}</pre>` : "")
             );
             chart.xAxis
                 // .tickFormat(d3.format(',f'));
