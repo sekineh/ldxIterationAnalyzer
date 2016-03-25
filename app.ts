@@ -3,7 +3,7 @@
 // declare var nv: any;
 // declare function nv.addGraph(any): any;
 
-const debug = true;
+const debug = false;
 var debugLog = debug
     ? console.log.bind(console)
     : ()=>{};

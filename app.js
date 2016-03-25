@@ -1,4 +1,4 @@
-var debug = true;
+var debug = false;
 var debugLog = debug
     ? console.log.bind(console)
     : function () { };
