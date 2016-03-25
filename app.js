@@ -1,13 +1,7 @@
-var debug = false;
-function debugLog() {
-    var args = [];
-    for (var _i = 0; _i < arguments.length; _i++) {
-        args[_i - 0] = arguments[_i];
-    }
-    if (debug) {
-        console.log(args);
-    }
-}
+var debug = true;
+var debugLog = debug
+    ? console.log.bind(console)
+    : function () { };
 var ColumnKind;
 (function (ColumnKind) {
     ColumnKind[ColumnKind["IGNORE"] = 1] = "IGNORE";

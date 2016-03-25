@@ -3,12 +3,10 @@
 // declare var nv: any;
 // declare function nv.addGraph(any): any;
 
-const debug = false;
-function debugLog(...args) {
-    if (debug) {
-        console.log(args);
-    }
-}
+const debug = true;
+var debugLog = debug
+    ? console.log.bind(console)
+    : ()=>{};
 
 enum ColumnKind {
     IGNORE = 1,
