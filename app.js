@@ -1,3 +1,7 @@
+/// <reference path="typings/main.d.ts" />
+// For nvd3:
+// declare var nv: any;
+// declare function nv.addGraph(any): any;
 var debug = false;
 var debugLog = debug
     ? console.log.bind(console)
@@ -27,6 +31,9 @@ function columnKindFromName(columnName) {
         return ColumnKind.RESULT;
     }
 }
+//
+// methods for dataset
+//
 function extractLevels(dataset, column_name) {
     if (columnKindFromName(column_name) != ColumnKind.ITERATOR) {
         return undefined;
@@ -44,6 +51,9 @@ function extractColumnSpec(dataset) {
         levels: extractLevels(dataset, e)
     }); });
 }
+//
+// Mithril component
+//
 var my;
 (function (my) {
     var vm;
@@ -104,12 +114,14 @@ var my;
                                     var arr = [];
                                     for (var _i = 0, _a = ev.target; _i < _a.length; _i++) {
                                         var x = _a[_i];
+                                        // debugLog(x.value, x.selected);
                                         if (x.selected) {
                                             arr.push(x.value);
                                         }
                                     }
                                     var result = vm.levelsSelected();
                                     result[i] = arr;
+                                    // debugLog('result', result);
                                     vm.levelsSelected(result);
                                 }
                             }, [
@@ -137,6 +149,7 @@ var my;
                     ])
                 ])
             ]),
+            // m("div", `X-Axis: ${vm.selectX()}`),
             vm.resultColumns.map(function (y, i) {
                 return m("div.col-md-4", [
                     m("h4", { id: "title_" + y.name + "_" + i }, ynameToTitle(y.name)),
@@ -150,12 +163,19 @@ var my;
     my.view = view;
     ;
 })(my || (my = {}));
+//
+// Event Handlers
+//
 function csvTextEntered(e) {
+    // set up mithril component
     m.mount(document.getElementById('mroot'), my);
 }
 $("#csvText").on("keyup", csvTextEntered);
 $("#parseButton").on("click", csvTextEntered);
 $(csvTextEntered);
+//
+// Loop Utility
+//
 function arrayAppendDistributive(array_a, array_b) {
     var retval = [];
     array_a.forEach(function (a) {
@@ -165,12 +185,14 @@ function arrayAppendDistributive(array_a, array_b) {
     });
     return retval;
 }
+// example
 var loopspecs = [
     { name: "a", values: ["8"] },
     { name: "b", values: ["0", "50", "100"] },
     { name: "c", values: ["8", "16"] },
     { name: "d", values: ["0"] }
 ];
+// example
 var flatternedLoopSpec = {
     "names": ["a", "b", "c", "d"],
     "value_arrays": [
@@ -196,6 +218,7 @@ function loopspecFlattern(loopspecs) {
     });
     return { names: indices, value_arrays: iteratedValues };
 }
+// debugLog(loopspecFlattern(loopspecs));
 function shortenColumnExpression(columnName) {
     switch (columnName) {
         case "Access Pattern - Read % = 100":
@@ -217,6 +240,7 @@ function generateKeyname(loopspecs, iter, numOfIterations) {
     debugLog('subIterators:', subIterators);
     var keyname = subIterators.map(function (e, i) {
         if (e) {
+            // return e + ' = ' + iter[i];
             return shortenColumnExpression(e + ' = ' + iter[i]);
         }
         else {
@@ -252,20 +276,30 @@ function generateValues(loopspecs, dataset) {
         return { key: keyname, values: datasetFiltered };
     });
 }
+//
+//
+//
 function ynameToTitle(yname) {
     return yname;
 }
+/**
+ * Mithril Componet that wraps nvd3 plots
+ */
 var plotComponent;
 (function (plotComponent) {
+    // Generates unique svg id
     var svgindex = 0;
     function genSvgSelector() {
         svgindex++;
         return "svg#svgGeneratedId-" + svgindex;
     }
+    // It's a constructor for ctrl object!
     function controller(args) {
         debugLog("plotComponent.controller() args:", args);
         this.yname = args.yname;
+        // this.xname = args.xname;
         this.svgid = genSvgSelector();
+        // this.columnsSelected = args.columnsSelected;
     }
     plotComponent.controller = controller;
     function view(ctrl) {
@@ -275,7 +309,10 @@ var plotComponent;
     function config(ctrl) {
         debugLog("plotComponent.config() args:", ctrl);
         return function (element, isInitialized) {
+            // debugLog('config func() called. element:', element);
+            // debugLog('config func() called. isInitialized:', isInitialized);
             plotSvg(ctrl.svgid, ctrl.yname);
+            // return ctrl;
         };
     }
     plotComponent.config = config;
@@ -292,14 +329,15 @@ var plotComponent;
         debugLog('loopspecs:', loopspecs);
         var datum = generateValues(loopspecs, dataset);
         debugLog('datum:', datum);
+        // var showLegend = datum.length > 1;
         nv.addGraph(function () {
             var chart = nv.models.multiBarChart()
                 .duration(100)
                 .x(function (d) { return d[xname]; })
                 .y(function (d) { return Number(d[yname]); })
-                .reduceXTicks(false)
-                .rotateLabels(-45)
-                .showControls(false)
+                .reduceXTicks(false) //If 'false', every single x-axis tick label will be rendered.
+                .rotateLabels(-45) //Angle to rotate x-axis labels.
+                .showControls(false) //Allow user to switch between 'Grouped' and 'Stacked' mode.
                 .stacked(false)
                 .showLegend(true);
             var defaultContentGenerator = chart.tooltip.contentGenerator();
