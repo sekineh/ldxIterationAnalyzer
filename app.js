@@ -322,3 +322,4 @@ var plotComponent;
         });
     }
 })(plotComponent || (plotComponent = {}));
+//# sourceMappingURL=app.js.map
